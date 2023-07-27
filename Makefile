@@ -40,16 +40,19 @@ $(OBJDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o $@ $<
 
 checkra1n-kpf-pongo:
-	@wget -qO deps/kpf https://cdn.discordapp.com/attachments/1044361234885128297/1133937720377479168/checkra1n-kpf-pongo
+	@echo "Downloading kpf"
+	@wget -qO deps/kpf https://cdn.discordapp.com/attachments/1044105905433747557/1134118800611094679/checkra1n-kpf-pongo
 	@xxd -i deps/kpf > deps/kpf.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/kpf.o deps/kpf.c
 
 ramdisk.dmg:
+	@echo "Downloading ramdisk"
 	@wget -qO deps/ramdisk https://cdn.nickchan.lol/palera1n/c-rewrite/deps/ramdisk.dmg
 	@xxd -i deps/ramdisk > deps/ramdisk.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/ramdisk.o deps/ramdisk.c
 
 binpack.dmg:
+	@echo "Downloading binpack"
 	@wget -qO deps/binpack https://cdn.nickchan.lol/palera1n/c-rewrite/deps/binpack.dmg
 	@xxd -i deps/binpack > deps/binpack.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/binpack.o deps/binpack.c
