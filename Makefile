@@ -41,7 +41,7 @@ $(OBJDIR)/%.o: src/%.c
 
 checkra1n-kpf-pongo:
 	@echo "Downloading kpf"
-	@wget -qO deps/kpf https://cdn.discordapp.com/attachments/1044105905433747557/1134118800611094679/checkra1n-kpf-pongo
+	@wget -qO deps/kpf https://cdn.discordapp.com/attachments/1089213912651669544/1134132488881582170/checkra1n-kpf-pongo
 	@xxd -i deps/kpf > deps/kpf.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/kpf.o deps/kpf.c
 
