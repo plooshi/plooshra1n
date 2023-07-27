@@ -1,0 +1,3 @@
+[submodule "openra1n"]
+	path = openra1n
+	url = https://github.com/plooshi/openra1n

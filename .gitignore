@@ -1,0 +1,9 @@
+obj/
+.vscode
+libusb-1.0.dll
+plooshra1n*
+deps/*.c
+deps/*.o
+deps/binpack
+deps/kpf
+deps/ramdisk
