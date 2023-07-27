@@ -33,14 +33,14 @@ clean:
 	make clean -C openra1n
 	rm -rf deps/*.o deps/*.c deps/kpf deps/ramdisk deps/binpack
 
-plooshra1n: libopenra1n.a $(OBJS)
+plooshra1n: libopenra1n.a $(OBJS) checkra1n-kpf-pongo ramdisk.dmg binpack.dmg
 	$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(LDFLAGS) $(INCLDIRS) $(OBJS) $(DEP_OBJS) $(LIBDIRS) $(LIBS) -o $@
 
 $(OBJDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o $@ $<
 
 checkra1n-kpf-pongo:
-	@wget -qO deps/kpf https://cdn.nickchan.lol/palera1n/artifacts/kpf/checkra1n-kpf-pongo
+	@wget -qO deps/kpf https://cdn.discordapp.com/attachments/1044361234885128297/1133937720377479168/checkra1n-kpf-pongo
 	@xxd -i deps/kpf > deps/kpf.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/kpf.o deps/kpf.c
 
