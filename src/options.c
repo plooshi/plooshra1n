@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include <options.h>
+#include <stdlib.h>
 
 static struct option longopts[] = {
 	{"setup-bindfs", no_argument, NULL, 'B'},
@@ -21,12 +22,38 @@ static struct option longopts[] = {
 	{"rootless", no_argument, NULL, 'l'},
 	{"force-revert", no_argument, NULL, 'R'},
 	{"safe-mode", no_argument, NULL, 's'},
+	{"help", no_argument, NULL, 'h'},
 	/*{"override-pongo", required_argument, NULL, 'k'},
 	{"override-overlay", required_argument, NULL, 'o'},
 	{"override-ramdisk", required_argument, NULL, 'r'},
 	{"override-kpf", required_argument, NULL, 'K'},*/
 	{NULL, 0, NULL, 0}
 };
+
+static int help(char *argv[])
+{
+	fprintf(stderr,
+			"Usage: %s [-BcCdpPSflRs] [-b boot arguments]\n"
+			"Made by Ploosh, using palera1n resources (for now)\n"
+			"iOS/iPadOS 15.0-17.0 jailbreak for arm64 devices\n\n"
+			"\t-R, --force-revert\t\t\tRemove jailbreak\n"
+			"\t-B, --setup-partial-fakefs\t\tSetup partial fakefs\n"
+			"\t-c, --setup-fakefs\t\t\tSetup fakefs\n"
+			"\t-C, --clean-fakefs\t\t\tClean fakefs\n"
+			"\t-D, --dfuhelper\t\t\t\tExit after entering DFU\n"
+			"\t-b, --boot-args <boot arguments>\tXNU boot arguments\n"
+			"\t-f, --fakefs \t\t\t\tBoots fakefs\n"
+			"\t-h, --help\t\t\t\tShow this help\n"
+			"\t-i, --override-checkra1n <file>\t\tOverride checkra1n\n"
+			"\t-k, --override-pongo <file>\t\tOverride Pongo image\n"
+			"\t-K, --override-kpf <file>\t\tOverride kernel patchfinder\n"
+			"\t-l, --rootless\t\t\t\tBoots rootless. This is the default\n"
+			"\t-p, --pongo-shell\t\t\tBoots to PongoOS shell\n"
+			"\t-P, --pongo-full\t\t\tBoots to a PongoOS shell with default images already uploaded\n"
+			"\t-s, --safe-mode\t\t\t\tEnter safe mode\n",
+			argv[0]);
+	exit(0);
+}
 
 char xargs_cmd[0x270] = "xargs ";
 char palerain_flags_cmd[0x30] = "plshrain";
@@ -35,9 +62,12 @@ uint64_t palerain_flags = palerain_option_verbose_boot | palerain_option_rootles
 int parse_options(int argc, char* argv[]) {
 	int opt;
 	int index;
-	while ((opt = getopt_long(argc, argv, "BcCdpPSbflRs", longopts, NULL)) != -1)
+	while ((opt = getopt_long(argc, argv, "hBcCdpPSbflRs", longopts, NULL)) != -1)
 	{
 		switch (opt) {
+		case 'h':
+			help(argv);
+			break;
 		case 'B':
 			palerain_flags |= palerain_option_setup_partial_root;
 			palerain_flags |= palerain_option_setup_rootful;
