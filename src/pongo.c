@@ -5,6 +5,8 @@
 #include <kpf.h>
 #include <ramdisk.h>
 #include <binpack.h>
+#include <options.h>
+#include <paleinfo.h>
 
 #define CMD_LEN_MAX 512
 
@@ -16,21 +18,20 @@ void *boot_device(stuff_t *arg) {
 	/*if (get_found_pongo())
 		return NULL;
 	set_found_pongo(1);*/
-	/*if ((palerain_flags & palerain_option_setup_rootful)) {
+	if ((palerain_flags & palerain_option_setup_rootful)) {
 		strncat(xargs_cmd, " wdt=-1", 0x270 - strlen(xargs_cmd) - 1);	
-	}*/
-	char xargs_cmd[0x270] = "xargs ";
+	}
 	usb_device_handle_t handle = arg->handle;
 	issue_pongo_command(handle, NULL);	
 	issue_pongo_command(handle, "fuse lock");
 	issue_pongo_command(handle, "sep auto");
 	upload_pongo_file(handle, deps_kpf, deps_kpf_len);
 	issue_pongo_command(handle, "modload");
-	issue_pongo_command(handle, "palera1n_flags 0x4000000"); // yes, this is verbose boot...
-	/*if ((palerain_flags & palerain_option_rootful))
+	issue_pongo_command(handle, palerain_flags_cmd);
+	if ((palerain_flags & palerain_option_rootful))
 	{
 		issue_pongo_command(handle, "rootfs");
-	}*/
+	}
 #ifdef NO_RAMDISK
 	if (deps_ramdisk_len != 0)
 #endif
@@ -47,16 +48,16 @@ void *boot_device(stuff_t *arg) {
 		issue_pongo_command(handle, "overlay");
 	}
 	issue_pongo_command(handle, xargs_cmd);
-	//if ((palerain_flags & palerain_option_pongo_full)) goto done;
+	if ((palerain_flags & palerain_option_pongo_full)) goto done;
 	issue_pongo_command(handle, "bootx");
 	log_info("Device should now be booting!");
-	/*if ((palerain_flags & palerain_option_setup_partial_root)) {
-		LOG(LOG_INFO, "Please wait up to 5 minutes for the bindfs to be created.");
-		LOG(LOG_INFO, "Once the device boots up to iOS, run again without the -B (Create BindFS) option to jailbreak.");
+	if ((palerain_flags & palerain_option_setup_partial_root)) {
+		log_info("Please wait up to 5 minutes for the bindfs to be created.");
+		log_info("Once the device boots up to iOS, run again without the -B (Create BindFS) option to jailbreak.");
 	} else if ((palerain_flags & palerain_option_setup_rootful)) {
-		LOG(LOG_INFO, "Please wait up to 10 minutes for the fakefs to be created.");
-		LOG(LOG_INFO, "Once the device boots up to iOS, run again without the -c (Create FakeFS) option to jailbreak.");
-	}*/
+		log_info("Please wait up to 10 minutes for the fakefs to be created.");
+		log_info("Once the device boots up to iOS, run again without the -c (Create FakeFS) option to jailbreak.");
+	}
 	/*if (dfuhelper_thr_running) {
 		pthread_cancel(dfuhelper_thread);
 		dfuhelper_thr_running = false;
