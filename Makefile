@@ -14,10 +14,14 @@ CC := xcrun -sdk macosx clang
 else
 USBLIB_FLAGS=-DHAVE_LIBUSB
 ORA1N_FLAGS=LIBUSB=1
-CFLAGS ?= -O2
-LIBS = -lopenra1n -llz4 -lm -limobiledevice-glue-1.0 -limobiledevice-1.0 -lusbmuxd-2.0 -lirecovery-1.0 -lplist-2.0 -lusb-1.0 -lssl -lcrypto
+CFLAGS ?= -O2 -static
+LIBS = -lopenra1n -llz4 -lm -lirecovery-1.0 -limobiledevice-glue-1.0 -limobiledevice-1.0 -lusbmuxd-2.0 -lplist-2.0 -lusb-1.0 -lssl -lcrypto
 LDFLAGS ?= -Lopenra1n -Lopenra1n/lz4
 #CC := clang
+endif
+ifeq ($(OS),Windows_NT)
+LIBS += -lws2_32 -lole32 -liphlpapi -lsetupapi -fstack-protector
+CFLAGS += -DIRECV_STATIC
 endif
 
 all: dirs submodules libopenra1n.a checkra1n-kpf-pongo ramdisk.dmg binpack.dmg $(OBJS) plooshra1n
