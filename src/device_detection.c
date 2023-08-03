@@ -25,7 +25,7 @@ const char *get_device_mode() {
         return "too_many";
     }
     usb_handle_t handle = found_targets[0];
-    unsigned short pid = (&handle)->pid;
+    unsigned short pid = handle.pid;
 
     if (pid == 0x12a8 || pid == 0x12aa || pid == 0x12ab) {
         return "normal";

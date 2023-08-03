@@ -121,10 +121,7 @@ bool ensure_dfu() {
         get_udid(&udid);
 
         if (strcmp(udid, "error") == 0) {
-            #ifdef _WIN32
-            log_error("Please boot directly into recovery/DFU mode, as usbmuxd doesn't work on Windows.");
-            #endif
-            log_error("Failed to get udid!");
+            log_error("Failed to get udid! Make sure usbmuxd is running, and try again.");
             return false;
         }
 

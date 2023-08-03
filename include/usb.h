@@ -10,8 +10,9 @@
 #else
 #include <pongo_iokit.h>
 #define USE_IOKIT
-#include <IOKit/IOCFPlugIn.h>
+#include <IOKit/IOKitLib.h>
 #include <IOKit/usb/IOUSBLib.h>
+#include <IOKit/IOCFPlugIn.h>
 
 #endif /* defined(HAVE_LIBUSB) || defined(_WIN32) || defined(__linux__) */
 

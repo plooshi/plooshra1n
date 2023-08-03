@@ -40,6 +40,13 @@
 #include <mach/mach.h>
 #include <pongo_iokit.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <common/log.h>
+
+void io_start(stuff_t *stuff);
+void io_stop(stuff_t *stuff);
+#define ERR log_error
+#define PONGO_USB_VENDOR    0x05ac
+#define PONGO_USB_PRODUCT   0x4141
 
 const char *usb_strerror(usb_ret_t err)
 {
@@ -70,10 +77,10 @@ usb_ret_t USBBulkUpload(usb_device_handle_t handle, void *data, uint32_t len)
 static void FoundDevice(void *refCon, io_iterator_t it)
 {
     stuff_t *stuff = refCon;
-    if(stuff->regID)
+    /*if(stuff->regID)
     {
         return;
-    }
+    }*/
     io_service_t usbDev = MACH_PORT_NULL;
     while((usbDev = IOIteratorNext(it)))
     {
@@ -241,7 +248,7 @@ int boot_handler(void) {
         return -1;
     }
     LostDevice(&stuff, lost);
-    // CFRunLoopRun();
+    //CFRunLoopRun();
     CFRelease(cfdict);
     return 0;
 }

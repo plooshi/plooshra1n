@@ -7,6 +7,7 @@
 #include <binpack.h>
 #include <options.h>
 #include <paleinfo.h>
+#include <pthread.h>
 
 #define CMD_LEN_MAX 512
 

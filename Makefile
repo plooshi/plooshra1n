@@ -1,5 +1,5 @@
 INCLDIRS = -I./include -Iopenra1n/include
-LIBDIRS ?= -L/usr/local/lib -L/usr/local/lib64
+LIBDIRS ?= -L/usr/local/lib
 SRC = $(wildcard src/*)
 OBJDIR = obj
 OBJS = $(patsubst src/%,$(OBJDIR)/%,$(SRC:.c=.o))
@@ -7,9 +7,9 @@ DEP_OBJS = deps/kpf.o deps/ramdisk.o deps/binpack.o
 
 ifeq ($(shell uname),Darwin)
 USBLIB_FLAGS=
-CFLAGS ?= -O2 -static
-LIBS = -lopenra1n -llz4 -lm -lplist-2.0 -limobiledevice-glue-1.0 -lirecovery-1.0 -limobiledevice-1.0 -lusbmuxd-2.0
-LDFLAGS ?= -Lopenra1n -Lopenra1n/lz4
+CFLAGS ?= -O2 -Wno-incompatible-pointer-types -Wno-deprecated-declarations -I/usr/local/Cellar/libirecovery/1.0.0/include -I/usr/local/Cellar/libimobiledevice/1.3.0_1/include -I/usr/local/Cellar/libusbmuxd/2.0.2/include -I/usr/local/Cellar/libplist/2.2.0/include
+LIBS = -lopenra1n -llz4 -lm /usr/local/Cellar/libirecovery/1.0.0/lib/libirecovery-1.0.a /usr/local/Cellar/libimobiledevice/1.3.0_1/lib/libimobiledevice-1.0.a /usr/local/Cellar/libusbmuxd/2.0.2/lib/libusbmuxd-2.0.a /usr/local/Cellar/libplist/2.2.0/lib/libplist-2.0.a /usr/local/Cellar/openssl@3/3.1.2/lib/libssl.a /usr/local/Cellar/openssl@3/3.1.2/lib/libcrypto.a -framework IOKit -framework CoreFoundation
+LDFLAGS ?= -Lopenra1n -Lopenra1n/lz4 
 CC := xcrun -sdk macosx clang
 else
 USBLIB_FLAGS=-DHAVE_LIBUSB
@@ -17,6 +17,7 @@ ORA1N_FLAGS=LIBUSB=1
 CFLAGS ?= -O2 -static
 LIBS = -lopenra1n -llz4 -lm -lirecovery-1.0 -limobiledevice-glue-1.0 -limobiledevice-1.0 -lusbmuxd-2.0 -lplist-2.0 -lusb-1.0 -lssl -lcrypto
 LDFLAGS ?= -Lopenra1n -Lopenra1n/lz4
+LIBDIRS += -L/usr/local/lib64
 #CC := clang
 endif
 ifeq ($(OS),Windows_NT)
@@ -45,19 +46,19 @@ $(OBJDIR)/%.o: src/%.c
 
 checkra1n-kpf-pongo:
 	@echo "Downloading kpf"
-	@wget -qO deps/kpf https://cdn.discordapp.com/attachments/1089213912651669544/1134132488881582170/checkra1n-kpf-pongo
+	@curl -sLo deps/kpf https://cdn.discordapp.com/attachments/1089213912651669544/1134132488881582170/checkra1n-kpf-pongo
 	@xxd -i deps/kpf > deps/kpf.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/kpf.o deps/kpf.c
 
 ramdisk.dmg:
 	@echo "Downloading ramdisk"
-	@wget -qO deps/ramdisk https://cdn.nickchan.lol/palera1n/c-rewrite/deps/ramdisk.dmg
+	@curl -sLo deps/ramdisk https://cdn.nickchan.lol/palera1n/c-rewrite/deps/ramdisk.dmg
 	@xxd -i deps/ramdisk > deps/ramdisk.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/ramdisk.o deps/ramdisk.c
 
 binpack.dmg:
 	@echo "Downloading binpack"
-	@wget -qO deps/binpack https://cdn.nickchan.lol/palera1n/c-rewrite/deps/binpack.dmg
+	@curl -sLo deps/binpack https://cdn.nickchan.lol/palera1n/c-rewrite/deps/binpack.dmg
 	@xxd -i deps/binpack > deps/binpack.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/binpack.o deps/binpack.c
 

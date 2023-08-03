@@ -1,7 +1,9 @@
 // deps
 #include <libimobiledevice/libimobiledevice.h>
 #include <libimobiledevice/lockdown.h>
+#ifndef __APPLE__
 #include <libimobiledevice-glue/utils.h>
+#endif
 
 // std c library
 #include <stdlib.h>
