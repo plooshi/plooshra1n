@@ -7,3 +7,4 @@ deps/*.o
 deps/binpack
 deps/kpf
 deps/ramdisk
+deps/old_*

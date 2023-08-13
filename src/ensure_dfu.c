@@ -26,33 +26,33 @@ bool enter_recovery(char *udid) {
 
     ret = idevice_new(&device, udid);
     if (ret != IDEVICE_E_SUCCESS) {
-        log_error("Unable to connect to device!\n");
+        log_error("Unable to connect to device!");
         return false;
     }
 
     if (LOCKDOWN_E_SUCCESS != (ldret = lockdownd_client_new(device, &client, "plooshra1n"))) {
-        log_error("Could not connect to lockdownd: %s (%d)\n", lockdownd_strerror(ldret), ldret);
+        log_error("Could not connect to lockdownd: %s (%d)", lockdownd_strerror(ldret), ldret);
         idevice_free(device);
         return false;
     }
 
-    log_debug("Sending device into recovery mode.\n");
+    log_debug("Sending device into recovery mode.");
     ldret = lockdownd_enter_recovery(client);
 	if (ldret == LOCKDOWN_E_SESSION_INACTIVE) {
 		lockdownd_client_free(client);
 		client = NULL;
 		if (LOCKDOWN_E_SUCCESS != (ldret = lockdownd_client_new_with_handshake(device, &client, "plooshra1n"))) {
-			log_error("Could not connect to lockdownd: %s (%d)\n", lockdownd_strerror(ldret), ldret);
+			log_error("Could not connect to lockdownd: %s (%d)", lockdownd_strerror(ldret), ldret);
 			idevice_free(device);
 			return false;
 		}
 		ldret = lockdownd_enter_recovery(client);
 	}
 	if (ldret != LOCKDOWN_E_SUCCESS) {
-		log_error("Failed to enter recovery mode!\n");
+		log_error("Failed to enter recovery mode!");
 		res = false;
 	} else {
-		log_info("Device is now going into recovery mode.\n");
+		log_info("Device is now going into recovery mode.");
 	}
 
     lockdownd_client_free(client);
@@ -79,7 +79,7 @@ bool dfuhelper(unsigned int cpid, char *product_type) {
     } else {
         step_one = "Hold home + power button";
     }
-    log_info("Press any key when ready for DFU mode\n");
+    log_info("Press any key when ready for DFU mode");
     getchar();
     step(3, "Get ready");
     step(10, step_one);
@@ -91,10 +91,10 @@ bool dfuhelper(unsigned int cpid, char *product_type) {
     }
 
     if (ensure_dfu()) {
-        log_info("Device successfully entered DFU mode!\n");
+        log_info("Device successfully entered DFU mode!");
         return true;
     } else {
-        log_error("Device did not enter DFU mode, please run plooshra1n again.\n");
+        log_error("Device did not enter DFU mode, please run plooshra1n again.");
         return false;
     }
 }

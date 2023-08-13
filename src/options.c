@@ -22,6 +22,7 @@ static struct option longopts[] = {
 	{"rootless", no_argument, NULL, 'l'},
 	{"force-revert", no_argument, NULL, 'R'},
 	{"safe-mode", no_argument, NULL, 's'},
+	{"old", no_argument, NULL, 'o'},
 	{"help", no_argument, NULL, 'h'},
 	/*{"override-pongo", required_argument, NULL, 'k'},
 	{"override-overlay", required_argument, NULL, 'o'},
@@ -33,9 +34,10 @@ static struct option longopts[] = {
 static int help(char *argv[])
 {
 	fprintf(stderr,
-			"Usage: %s [-BcCdpPSflRs] [-b boot arguments]\n"
+			"Usage: %s [-o] [-BcCdpPSflRs] [-b boot arguments]\n"
 			"Made by Ploosh, using palera1n resources (for now)\n"
 			"iOS/iPadOS 15.0-17.0 jailbreak for arm64 devices\n\n"
+			"\t-o, --old\t\t\t\tBoots checkra1n 0.12.4\n"
 			"\t-R, --force-revert\t\t\tRemove jailbreak\n"
 			"\t-B, --setup-bindfs\t\t\tSetup bindfs\n"
 			"\t-c, --setup-fakefs\t\t\tSetup fakefs\n"
@@ -45,6 +47,7 @@ static int help(char *argv[])
 			"\t-f, --fakefs \t\t\t\tBoots fakefs\n"
 			"\t-l, --rootless\t\t\t\tBoots rootless. This is the default\n"
 			"\t-h, --help\t\t\t\tShow this help\n"
+			"\t-S, --serial\t\t\t\tLog to serial console\n"
 			"\t-p, --pongo-shell\t\t\tBoots to PongoOS shell\n"
 			"\t-P, --pongo-full\t\t\tBoots to a PongoOS shell with default images already uploaded\n"
 			"\t-s, --safe-mode\t\t\t\tEnter safe mode\n",
@@ -55,15 +58,20 @@ static int help(char *argv[])
 char xargs_cmd[0x270] = "xargs ";
 char palerain_flags_cmd[0x30] = "plshrain";
 uint64_t palerain_flags = palerain_option_verbose_boot | palerain_option_rootless;
+uint64_t plooshrain_flags = 0;
 
 int parse_options(int argc, char* argv[]) {
 	int opt;
 	int index;
-	while ((opt = getopt_long(argc, argv, "hBcCdpPSbflRs", longopts, NULL)) != -1)
+	while ((opt = getopt_long(argc, argv, "hoBcCdpPSbflRs", longopts, NULL)) != -1)
 	{
 		switch (opt) {
 		case 'h':
 			help(argv);
+			break;
+		case 'o':
+			plooshrain_flags |= plooshrain_option_old_boot;
+			palerain_flags &= ~palerain_option_rootless;
 			break;
 		case 'B':
 			palerain_flags |= palerain_option_setup_partial_root;
@@ -92,7 +100,7 @@ int parse_options(int argc, char* argv[]) {
 			break;
 		case 'b':
 			if (strstr(optarg, "rootdev=") != NULL) {
-				log_error("The boot arg rootdev= is already used by palera1n and cannot be overriden");
+				log_error("The boot arg rootdev= is already used by plooshra1n and cannot be overriden");
 				return -1;
 			} else if (strlen(optarg) > (sizeof(xargs_cmd) - 0x20)) {
                 log_error("Boot arguments too long");
@@ -122,7 +130,7 @@ int parse_options(int argc, char* argv[]) {
 	if ((strstr(xargs_cmd, "serial=") != NULL) && (palerain_flags & palerain_option_setup_rootful)) {
 		palerain_flags &= ~palerain_option_verbose_boot;
 	}
-
+	
 	if (!(palerain_flags & palerain_option_rootful)) {
 		if ((palerain_flags & palerain_option_setup_rootful)) {
 			log_error("Cannot setup rootful when rootless is requested. Use -f to enable rootful mode.");

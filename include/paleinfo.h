@@ -32,3 +32,5 @@
 #define palerain_option_flower_chain         (UINT64_C(1) << 61) /* Flower chain */
 #define palerain_option_test1                (UINT64_C(1) << 62) /* Developer test option 1 */
 #define palerain_option_test2                (UINT64_C(1) << 63) /* Developer test option 2 */
+
+#define plooshrain_option_old_boot           (UINT64_C(1) << 0)  /* Boot checkra1n 0.12.4 */

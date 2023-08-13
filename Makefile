@@ -1,9 +1,10 @@
 INCLDIRS = -I./include -Iopenra1n/include
 LIBDIRS ?= -L/usr/local/lib
-SRC = $(wildcard src/*)
+SRC = $(wildcard src/*.c)
 OBJDIR = obj
 OBJS = $(patsubst src/%,$(OBJDIR)/%,$(SRC:.c=.o))
-DEP_OBJS = deps/kpf.o deps/ramdisk.o deps/binpack.o
+DEP_SRC = $(wildcard deps/*.c)
+DEP_OBJS = $(DEP_SRC:.c=.o)
 
 ifeq ($(shell uname),Darwin)
 USBLIB_FLAGS=
@@ -25,7 +26,7 @@ LIBS += -lws2_32 -lole32 -liphlpapi -lsetupapi -fstack-protector
 CFLAGS += -DIRECV_STATIC
 endif
 
-all: dirs submodules libopenra1n.a checkra1n-kpf-pongo ramdisk.dmg binpack.dmg $(OBJS) plooshra1n
+all: dirs submodules libopenra1n.a blobs $(OBJS) plooshra1n
 
 dirs:
 	@mkdir -p $(OBJDIR)
@@ -36,13 +37,15 @@ submodules:
 clean:
 	@rm -rf plooshra1n obj
 	make clean -C openra1n
-	rm -rf deps/*.o deps/*.c deps/kpf deps/ramdisk deps/binpack
+	rm -rf deps/*.o deps/*.c deps/kpf deps/ramdisk deps/binpack deps/old_kpf deps/old_ramdisk deps/old_binpack
 
-plooshra1n: libopenra1n.a $(OBJS) checkra1n-kpf-pongo ramdisk.dmg binpack.dmg
+plooshra1n: libopenra1n.a $(OBJS) blobs
 	$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(LDFLAGS) $(INCLDIRS) $(OBJS) $(DEP_OBJS) $(LIBDIRS) $(LIBS) -o $@
 
 $(OBJDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o $@ $<
+
+blobs: checkra1n-kpf-pongo ramdisk.dmg binpack.dmg old_checkra1n-kpf-pongo old_ramdisk.dmg old_binpack.dmg
 
 checkra1n-kpf-pongo:
 	@echo "Downloading kpf"
@@ -61,6 +64,25 @@ binpack.dmg:
 	@curl -sLo deps/binpack https://cdn.nickchan.lol/palera1n/c-rewrite/deps/binpack.dmg
 	@xxd -i deps/binpack > deps/binpack.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/binpack.o deps/binpack.c
+
+old_checkra1n-kpf-pongo:
+	@echo "Downloading old kpf"
+	@curl -sLo deps/old_kpf https://cdn.discordapp.com/attachments/1007048108426940578/1140259340054433822/checkra1n-kpf-pongo
+	@xxd -i deps/old_kpf > deps/old_kpf.c
+	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/old_kpf.o deps/old_kpf.c
+
+old_ramdisk.dmg:
+	@echo "Downloading old ramdisk"
+	@curl -sLo deps/old_ramdisk https://cdn.discordapp.com/attachments/1007048108426940578/1140257994744012860/rdsk_dora
+	@xxd -i deps/old_ramdisk > deps/old_ramdisk.c
+	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/old_ramdisk.o deps/old_ramdisk.c
+
+old_binpack.dmg:
+	@echo "Downloading old binpack"
+	@curl -sLo deps/old_binpack https://cdn.discordapp.com/attachments/1007048108426940578/1140262817392508978/overlay.dmg
+	@xxd -i deps/old_binpack > deps/old_binpack.c
+	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/old_binpack.o deps/old_binpack.c
+
 
 libopenra1n.a:
 	@make $(ORA1N_FLAGS) -C openra1n
