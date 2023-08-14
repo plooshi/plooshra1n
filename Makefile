@@ -45,11 +45,12 @@ plooshra1n: libopenra1n.a $(OBJS) blobs
 $(OBJDIR)/%.o: src/%.c
 	$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o $@ $<
 
-blobs: checkra1n-kpf-pongo ramdisk.dmg binpack.dmg old_checkra1n-kpf-pongo old_ramdisk.dmg old_binpack.dmg
+blobs: checkra1n-kpf-pongo ramdisk.dmg binpack.dmg old_ramdisk.dmg old_binpack.dmg
 
 checkra1n-kpf-pongo:
 	@echo "Downloading kpf"
-	@curl -sLo deps/kpf https://cdn.discordapp.com/attachments/1089213912651669544/1134132488881582170/checkra1n-kpf-pongo
+	@curl -sLo deps/kpf https://cdn.discordapp.com/attachments/1007048108426940578/1140796662135128155/checkra1n-kpf-pongo
+	@#cp ~/Downloads/pongoOS/build/checkra1n-kpf-pongo deps/kpf
 	@xxd -i deps/kpf > deps/kpf.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/kpf.o deps/kpf.c
 
@@ -64,12 +65,6 @@ binpack.dmg:
 	@curl -sLo deps/binpack https://cdn.nickchan.lol/palera1n/c-rewrite/deps/binpack.dmg
 	@xxd -i deps/binpack > deps/binpack.c
 	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/binpack.o deps/binpack.c
-
-old_checkra1n-kpf-pongo:
-	@echo "Downloading old kpf"
-	@curl -sLo deps/old_kpf https://cdn.discordapp.com/attachments/1007048108426940578/1140259340054433822/checkra1n-kpf-pongo
-	@xxd -i deps/old_kpf > deps/old_kpf.c
-	@$(CC) $(CFLAGS) $(USBLIB_FLAGS) $(INCLDIRS) -c -o deps/old_kpf.o deps/old_kpf.c
 
 old_ramdisk.dmg:
 	@echo "Downloading old ramdisk"

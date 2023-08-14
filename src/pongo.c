@@ -5,7 +5,6 @@
 #include <kpf.h>
 #include <ramdisk.h>
 #include <binpack.h>
-#include <old_kpf.h>
 #include <old_ramdisk.h>
 #include <old_binpack.h>
 #include <options.h>
@@ -13,6 +12,8 @@
 #include <pthread.h>
 
 #define CMD_LEN_MAX 512
+
+uint32_t kver = 0;
 
 // palera1n code
 int issue_pongo_command(usb_device_handle_t handle, char *command);
@@ -29,14 +30,11 @@ void *boot_device(stuff_t *arg) {
 	issue_pongo_command(handle, NULL);	
 	issue_pongo_command(handle, "fuse lock");
 	issue_pongo_command(handle, "sep auto");
-	if (plooshrain_flags & plooshrain_option_old_boot) {
-		upload_pongo_file(handle, deps_old_kpf, deps_old_kpf_len);
-	} else {
-		upload_pongo_file(handle, deps_kpf, deps_kpf_len);
-	}
+	upload_pongo_file(handle, deps_kpf, deps_kpf_len);
 	issue_pongo_command(handle, "modload");
+	issue_pongo_command(handle, "darwin");
 	issue_pongo_command(handle, palerain_flags_cmd);
-	if ((palerain_flags & palerain_option_rootful) && !(plooshrain_flags & plooshrain_option_old_boot))
+	if ((palerain_flags & palerain_option_rootful) && kver >= 21)
 	{
 		issue_pongo_command(handle, "rootfs");
 	}
@@ -45,7 +43,7 @@ void *boot_device(stuff_t *arg) {
 #endif
 	{
 		strncat(xargs_cmd, " rootdev=md0", 0x270 - strlen(xargs_cmd) - 1);
-		if (plooshrain_flags & plooshrain_option_old_boot) {
+		if (kver <= 20) {
 			upload_pongo_file(handle, deps_old_ramdisk, deps_old_ramdisk_len);
 		} else {
 			upload_pongo_file(handle, deps_ramdisk, deps_ramdisk_len);
@@ -56,7 +54,7 @@ void *boot_device(stuff_t *arg) {
 	if (binpack_dmg_len != 0)
 #endif
 	{
-		if (plooshrain_flags & plooshrain_option_old_boot) {
+		if (kver <= 20) {
 			upload_pongo_file(handle, deps_old_binpack, deps_old_binpack_len);
 		} else {
 			upload_pongo_file(handle, deps_binpack, deps_binpack_len);
@@ -117,7 +115,11 @@ fetch_output:
 			ret = USBControlTransfer(handle, 0xa1, 1, 0, 0, 0x1000, stdout_buf + outpos, &outlen);
 			if (ret == USB_RET_SUCCESS)
 			{
-				//write_stdout(stdout_buf + outpos, outlen);
+				if (command != NULL && strcmp(command, "darwin") == 0) {
+					if (kver == 0) {
+						kver = atoi(stdout_buf + outpos + 24);
+					}
+				}
 				outpos += outlen;
 				if (outpos > 0x1000)
 				{
