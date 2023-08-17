@@ -7,9 +7,16 @@ DEP_SRC = $(wildcard deps/*.c)
 DEP_OBJS = $(DEP_SRC:.c=.o)
 
 ifeq ($(shell uname),Darwin)
+ifeq ($(shell arch),i386)
+BREW_PREFIX ?= /usr/local
+else ifeq ($(shell arch),arm64)
+BREW_PREFIX ?= /opt/homebrew
+else
+BREW_PREFIX ?= /nebula
+endif
 USBLIB_FLAGS=
-CFLAGS ?= -O2 -Wno-incompatible-pointer-types -Wno-deprecated-declarations -I/usr/local/Cellar/libirecovery/1.0.0/include -I/usr/local/Cellar/libimobiledevice/1.3.0_1/include -I/usr/local/Cellar/libusbmuxd/2.0.2/include -I/usr/local/Cellar/libplist/2.2.0/include
-LIBS = -lopenra1n -llz4 -lm /usr/local/Cellar/libirecovery/1.0.0/lib/libirecovery-1.0.a /usr/local/Cellar/libimobiledevice/1.3.0_1/lib/libimobiledevice-1.0.a /usr/local/Cellar/libusbmuxd/2.0.2/lib/libusbmuxd-2.0.a /usr/local/Cellar/libplist/2.2.0/lib/libplist-2.0.a /usr/local/Cellar/openssl@3/3.1.2/lib/libssl.a /usr/local/Cellar/openssl@3/3.1.2/lib/libcrypto.a -framework IOKit -framework CoreFoundation
+CFLAGS ?= -O2 -Wno-incompatible-pointer-types -Wno-deprecated-declarations -I$(BREW_PREFIX)/Cellar/libirecovery/1.0.0/include -I$(BREW_PREFIX)/Cellar/libimobiledevice/1.3.0_1/include -I$(BREW_PREFIX)/Cellar/libusbmuxd/2.0.2/include -I$(BREW_PREFIX)/Cellar/libplist/2.2.0/include
+LIBS = -lopenra1n -llz4 -lm $(BREW_PREFIX)/Cellar/libirecovery/1.0.0/lib/libirecovery-1.0.a $(BREW_PREFIX)/Cellar/libimobiledevice/1.3.0_1/lib/libimobiledevice-1.0.a $(BREW_PREFIX)/Cellar/libusbmuxd/2.0.2/lib/libusbmuxd-2.0.a $(BREW_PREFIX)/Cellar/libplist/2.2.0/lib/libplist-2.0.a $(BREW_PREFIX)/Cellar/openssl@3/3.1.2/lib/libssl.a $(BREW_PREFIX)/Cellar/openssl@3/3.1.2/lib/libcrypto.a -framework IOKit -framework CoreFoundation
 LDFLAGS ?= -Lopenra1n -Lopenra1n/lz4 
 CC := xcrun -sdk macosx clang
 else

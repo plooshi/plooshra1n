@@ -1,4 +1,5 @@
 obj/
+dep_root/
 .vscode
 libusb-1.0.dll
 plooshra1n*
