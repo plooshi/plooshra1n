@@ -1,5 +1,5 @@
-#ifndef _USB_H
-#define _USB_H
+#ifndef _PLOOSHRA1N_USB_H
+#define _PLOOSHRA1N_USB_H
 
 // deps
 #if defined(HAVE_LIBUSB) || defined(_WIN32) || defined(__linux__)
@@ -30,4 +30,4 @@ typedef struct {
 #endif
 } usb_handle_t;
 
-#endif /* _USB_H */
+#endif /* _PLOOSHRA1N_USB_H */
