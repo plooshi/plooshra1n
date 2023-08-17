@@ -57,30 +57,6 @@ int wait_usb_handles(usb_handle_t **found_targets, int targets[][2], unsigned in
 #else
 #include <CoreFoundation/CoreFoundation.h>
 
-struct IOUSBConfigurationDescriptor
-{
-    uint8_t  bLength;
-    uint8_t  bDescriptorType;
-    uint16_t wTotalLength;
-    uint8_t  bNumInterfaces;
-    uint8_t  bConfigurationValue;
-    uint8_t  iConfiguration;
-    uint8_t  bmAttributes;
-    uint8_t  MaxPower;
-} __attribute__((packed));
-struct IOUSBFindInterfaceRequest
-{
-    UInt16 bInterfaceClass;                     // requested class
-    UInt16 bInterfaceSubClass;                  // requested subclass
-    UInt16 bInterfaceProtocol;                  // requested protocol
-    UInt16 bAlternateSetting;                   // requested alt setting
-};
-enum
-{
-    kIOUSBFindInterfaceDontCare = 0xFFFF
-};
-
-
 static void
 cf_dictionary_set_int16(CFMutableDictionaryRef dict, const void *key, uint16_t val) {
 	CFNumberRef cf_val = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt16Type, &val);

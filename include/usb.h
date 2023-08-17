@@ -1,5 +1,7 @@
-#ifndef _USB_H
-#define _USB_H
+#ifndef PLOOSHRA1N_USB_H
+#define PLOOSHRA1N_USB_H
+
+/* Changing the header guard might lead to header guard clash with IOKit! */
 
 // deps
 #if defined(HAVE_LIBUSB) || defined(_WIN32) || defined(__linux__)
@@ -30,4 +32,4 @@ typedef struct {
 #endif
 } usb_handle_t;
 
-#endif /* _USB_H */
+#endif /* PLOOSHRA1N_USB_H */
