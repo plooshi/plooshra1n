@@ -33,6 +33,9 @@ void *boot_device(stuff_t *arg) {
 	upload_pongo_file(handle, deps_kpf, deps_kpf_len);
 	issue_pongo_command(handle, "modload");
 	issue_pongo_command(handle, "darwin");
+	if (kver <= 20) {
+		palerain_flags |= palerain_option_rootful;
+	}
 	issue_pongo_command(handle, palerain_flags_cmd);
 	if ((palerain_flags & palerain_option_rootful) && kver >= 21)
 	{
